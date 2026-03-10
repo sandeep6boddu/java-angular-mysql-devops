@@ -1,0 +1,37 @@
+/* Global Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--off-white);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+    --gold: #E8A838;
+    --gold-light: #F2C56B;
+    --gold-dark: #C48A1E;
+    --charcoal: #555049;
+    --charcoal-dark: #3A3530;
+    --charcoal-light: #6E675F;
+    --off-white: #FFF8F0;
+    --cream: #FEF3E2;
+    --white: #FFFFFF;
+    --text: #333333;
+    --text-light: #777777;
+    --shadow: 0 4px 24px rgba(85, 80, 73, 0.10);
+    --shadow-hover: 0 8px 40px rgba(85, 80, 73, 0.18);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

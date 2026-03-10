@@ -1,0 +1,396 @@
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a class="nav-logo" (click)="scrollTo('hero')">
+      <img src="assets/logo.png" alt="MillEats Logo" class="logo-img" />
+    </a>
+    <button class="nav-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" [class.open]="isMenuOpen">
+      <li><a (click)="scrollTo('hero')">Home</a></li>
+      <li><a (click)="scrollTo('products')">Products</a></li>
+      <li><a (click)="scrollTo('benefits')">Benefits</a></li>
+      <li><a (click)="scrollTo('about')">About</a></li>
+      <li><a (click)="scrollTo('contact')" class="nav-cta">Contact Us</a></li>
+    </ul>
+    <button class="nav-admin-btn" (click)="toggleAdminView()" *ngIf="hasPlacedOrder && !isAdminView">
+      Admin Panel
+    </button>
+    <button class="cart-btn" (click)="toggleCart()" *ngIf="!isAdminView">
+      🛒
+      <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Storefront View: Hero, Products, Benefits, About, Contact -->
+<ng-container *ngIf="!isAdminView">
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">🌾 100% Natural Millet Snacks</div>
+      <h1>Enjoy the Taste of<br /><span class="highlight">Eating Right.</span></h1>
+      <p class="hero-subtitle">
+        Discover our range of wholesome millet snacks — gluten-free, no preservatives,
+        and packed with natural goodness. Crafted for health-conscious snack lovers.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" (click)="scrollTo('products')">Explore Products</a>
+        <a class="btn btn-outline" (click)="scrollTo('about')">Our Story</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number">9+</span>
+          <span class="stat-label">Products</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Natural</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">0</span>
+          <span class="stat-label">Preservatives</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-image-wrapper">
+      <img src="assets/products/cookies.png" alt="MillEats Millet Snacks" class="hero-image" />
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products" id="products">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Our Products</span>
+        <h2>Wholesome Millet Snacks</h2>
+        <p>From crunchy cookies to energy-packed bars — every bite is a step towards healthier snacking.</p>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="category-tabs">
+        <button *ngFor="let cat of categories" class="tab-btn" [class.active]="activeCategory === cat"
+          (click)="filterByCategory(cat)">
+          {{ cat }}
+        </button>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="product-grid" *ngIf="!isLoading">
+        <div class="product-card" *ngFor="let product of filteredProducts; let i = index"
+          [style.animation-delay]="i * 0.1 + 's'">
+          <div class="product-image-wrapper">
+            <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
+            <div class="product-badge">{{ product.category }}</div>
+          </div>
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <div class="product-footer">
+              <span class="product-price">₹{{ product.price }}</span>
+              <button class="btn btn-sm" (click)="addToCart(product)">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading products...</p>
+      </div>
+
+      <!-- Fallback Notice -->
+      <div class="fallback-notice" *ngIf="useFallback">
+        <p>⚡ Showing demo data — start the backend server to load from the API.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="benefits" id="benefits">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Why MillEats?</span>
+        <h2>The MillEats Difference</h2>
+        <p>Every snack is crafted with care using premium millets and natural ingredients.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">🌾</div>
+          <h3>Gluten Free</h3>
+          <p>Made with naturally gluten-free millets, safe for those with gluten sensitivities.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">💪</div>
+          <h3>High Fiber</h3>
+          <p>Packed with dietary fiber for better digestion and sustained energy throughout the day.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🚫</div>
+          <h3>No Preservatives</h3>
+          <p>Zero artificial preservatives or additives. Just pure, wholesome millet goodness.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🌿</div>
+          <h3>Natural Ingredients</h3>
+          <p>Sourced from trusted farmers. Every ingredient is natural, clean, and nutrient-rich.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">⚡</div>
+          <h3>Energy Boost</h3>
+          <p>Low glycemic index millets provide steady energy without the sugar crash.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">❤️</div>
+          <h3>Heart Healthy</h3>
+          <p>Rich in magnesium and potassium, millets promote cardiovascular health.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <div class="section-container">
+      <div class="about-grid">
+        <div class="about-image">
+          <img src="assets/products/ourstory.png" alt="About MillEats" />
+          <div class="about-image-accent"></div>
+        </div>
+        <div class="about-content">
+          <span class="section-tag">Our Story</span>
+          <h2>Bringing Millets Back to Your Plate</h2>
+          <p>
+            At MillEats, we believe that healthy snacking shouldn't mean compromising on taste.
+            Our journey began with a simple mission — to make millets, the ancient super grain,
+            accessible and delicious for the modern snacker.
+          </p>
+          <p>
+            Every product is crafted by skilled artisans using traditional recipes and premium
+            ingredients. From crispy crunchies to energy-packed bars, we bring you snacks that
+            fuel your body and delight your taste buds.
+          </p>
+          <div class="about-highlights">
+            <div class="about-highlight">
+              <span class="highlight-number">500+</span>
+              <span class="highlight-text">Happy Customers</span>
+            </div>
+            <div class="about-highlight">
+              <span class="highlight-number">9</span>
+              <span class="highlight-text">Product Varieties</span>
+            </div>
+            <div class="about-highlight">
+              <span class="highlight-number">3</span>
+              <span class="highlight-text">Categories</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <div class="section-container">
+      <div class="contact-content">
+        <span class="section-tag">Get In Touch</span>
+        <h2>Ready to Snack Healthy?</h2>
+        <p>Reach out to us for bulk orders, corporate subscriptions, or just to say hello!</p>
+        <div class="contact-info">
+          <div class="contact-item">
+            <span class="contact-icon">📧</span>
+            <span>hello&#64;milleats.com</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">📞</span>
+            <span>+91 72699 66666</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">📍</span>
+            <span>Hyderabad, Telangana, India</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</ng-container>
+
+<!-- Admin Dashboard View -->
+<section class="admin-dashboard" *ngIf="isAdminView">
+  <div class="section-container">
+    <div class="admin-header">
+      <h2>Admin Dashboard</h2>
+      <button class="btn btn-outline" (click)="toggleAdminView()">← Back to Store</button>
+    </div>
+
+    <div class="loading" *ngIf="isLoadingAdmin">
+      <div class="spinner"></div>
+      <p>Loading orders...</p>
+    </div>
+
+    <div class="orders-table-wrapper" *ngIf="!isLoadingAdmin && orders.length > 0">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Items</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td>#{{ order.id }}</td>
+            <td>{{ order.orderDate | date:'medium' }}</td>
+            <td>
+              <strong>{{ order.customerName }}</strong><br>
+              <small>{{ order.customerEmail }}</small><br>
+              <small class="text-muted">{{ order.shippingAddress }}</small>
+            </td>
+            <td><strong>₹{{ order.totalAmount }}</strong></td>
+            <td>
+              <ul class="admin-item-list">
+                <li *ngFor="let item of order.items">
+                  {{ item.quantity }}x {{ item.product?.name || 'Item ' + item.productId }}
+                </li>
+              </ul>
+            </td>
+            <td>
+              <button class="btn admin-delete-btn" (click)="deleteOrder(order.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="fallback-notice" *ngIf="!isLoadingAdmin && orders.length === 0">
+      <p>No orders found yet.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="MillEats" class="footer-logo" />
+        <p>Enjoy the taste of eating right. Wholesome millet snacks crafted with love and care.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a (click)="scrollTo('hero')">Home</a></li>
+          <li><a (click)="scrollTo('products')">Products</a></li>
+          <li><a (click)="scrollTo('benefits')">Benefits</a></li>
+          <li><a (click)="scrollTo('about')">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Categories</h4>
+        <ul>
+          <li><a (click)="filterByCategory('Millet Cookies'); scrollTo('products')">Millet Cookies</a></li>
+          <li><a (click)="filterByCategory('Millet Bars'); scrollTo('products')">Millet Bars</a></li>
+          <li><a (click)="filterByCategory('Millet Crunchies'); scrollTo('products')">Millet Crunchies</a></li>
+          <li><a (click)="filterByCategory('Millet Puffs'); scrollTo('products')">Millet Puffs</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Contact</h4>
+        <ul>
+          <li>hello&#64;milleats.com</li>
+          <li>+91 72699 66666</li>
+          <li>Hyderabad, India</li>
+          <li>Indiana, USA</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 MillEats. All rights reserved. | Built for DevOps Practice</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Cart Sidebar -->
+<div class="cart-overlay" [class.open]="isCartOpen && !isAdminView" (click)="toggleCart()"></div>
+<div class="cart-sidebar" [class.open]="isCartOpen && !isAdminView">
+  <div class="cart-header">
+    <h3>🛒 Your Cart</h3>
+    <button class="cart-close" (click)="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body">
+    <!-- View: Cart Items -->
+    <ng-container *ngIf="!isCheckout">
+      <div class="cart-empty" *ngIf="cartItems.length === 0">
+        <p>Your cart is empty</p>
+        <button class="btn btn-primary" (click)="toggleCart(); scrollTo('products')">Browse Products</button>
+      </div>
+      <div class="cart-item" *ngFor="let item of cartItems">
+        <img [src]="item.product.imageUrl" [alt]="item.product.name" class="cart-item-img" />
+        <div class="cart-item-info">
+          <h4>{{ item.product.name }}</h4>
+          <p class="cart-item-price">₹{{ item.product.price }}</p>
+          <div class="cart-item-qty">
+            <button (click)="updateQuantity(item.product.id, -1)">−</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="updateQuantity(item.product.id, 1)">+</button>
+          </div>
+        </div>
+        <button class="cart-item-remove" (click)="removeFromCart(item.product.id)">🗑</button>
+      </div>
+    </ng-container>
+
+    <!-- View: Checkout Form -->
+    <div class="checkout-form" *ngIf="isCheckout">
+      <button class="back-link" (click)="backToCart()">← Back to Cart</button>
+      <h4 class="checkout-title">Delivery Details</h4>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" [(ngModel)]="checkoutForm.name" placeholder="John Doe" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" [(ngModel)]="checkoutForm.email" placeholder="john@example.com" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label>Shipping Address</label>
+        <textarea [(ngModel)]="checkoutForm.address" placeholder="123 Main St, City, Country" class="form-control"
+          rows="3"></textarea>
+      </div>
+
+      <div class="checkout-summary">
+        <p>Total to pay: <strong>₹{{cartTotal}}</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-footer" *ngIf="cartItems.length > 0">
+    <div class="cart-total" *ngIf="!isCheckout">
+      <span>Total:</span>
+      <span class="cart-total-price">₹{{ cartTotal }}</span>
+    </div>
+
+    <button class="btn btn-primary cart-checkout-btn" *ngIf="!isCheckout" (click)="proceedToCheckout()">Proceed to
+      Checkout</button>
+
+    <button class="btn btn-primary cart-checkout-btn" *ngIf="isCheckout" (click)="submitOrder()"
+      [disabled]="isSubmittingOrder">
+      {{ isSubmittingOrder ? 'Processing...' : 'Place Order' }}
+    </button>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" [class.show]="showToast">
+  ✅ {{ toastMessage }}
+</div>
