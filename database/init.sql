@@ -5,7 +5,11 @@ CREATE DATABASE IF NOT EXISTS milleats;
 USE milleats;
 
 -- Drop table if exists for clean re-initialization
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS products;
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE products (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
